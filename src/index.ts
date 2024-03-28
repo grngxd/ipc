@@ -19,7 +19,7 @@ class IPC {
 
 	static Remote = class {
 		// Create a new RemoteEvent
-		static new(name: string) {
+		static create(name: string) {
 			const RemoteEvent = new Instance("RemoteEvent");
 			RemoteEvent.Name = name;
 			RemoteEvent.Parent = ReplicatedStorage.WaitForChild("IPC").WaitForChild("Remote");
@@ -27,31 +27,31 @@ class IPC {
 		}
 
 		// Listen for a RemoteEvent
-		static on(name: string, callback: (player: Player, ...args: unknown[]) => void) {
+		static on<T extends unknown[]>(name: string, callback: (player: Player, ...args: T) => void) {
 			let RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Remote")
-				.WaitForChild(name) as RemoteEvent;
+				.FindFirstChild(name) as RemoteEvent;
 
 			// if the event is undefined, call new to create it
-			if (!RemoteEvent) {
-				IPC.Remote.new(name);
+			if (typeIs(RemoteEvent, "nil")) {
+				this.create(name);
 				RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Remote")
 					.WaitForChild(name) as RemoteEvent;
 			}
 
-			RemoteEvent.OnServerEvent.Connect(callback);
+			RemoteEvent.OnServerEvent.Connect((player: Player, ...args: unknown[]) => callback(player, ...(args as T)));
 		}
 
 		// Fire a RemoteEvent to a client
 		static fire(name: string, player: Player, ...args: unknown[]) {
 			let RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Remote")
-				.WaitForChild(name) as RemoteEvent;
+				.FindFirstChild(name) as RemoteEvent;
 
 			// if the event is undefined, call new to create it
-			if (!RemoteEvent) {
-				IPC.Remote.new(name);
+			if (typeIs(RemoteEvent, "nil")) {
+				this.create(name);
 				RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Remote")
 					.WaitForChild(name) as RemoteEvent;
@@ -64,11 +64,11 @@ class IPC {
 		static fireAll(name: string, ...args: unknown[]) {
 			let RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Remote")
-				.WaitForChild(name) as RemoteEvent;
+				.FindFirstChild(name) as RemoteEvent;
 
 			// if the event is undefined, call new to create it
-			if (!RemoteEvent) {
-				IPC.Remote.new(name);
+			if (typeIs(RemoteEvent, "nil")) {
+				this.create(name);
 				RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Remote")
 					.WaitForChild(name) as RemoteEvent;
@@ -81,11 +81,11 @@ class IPC {
 		static fireServer(name: string, ...args: unknown[]) {
 			let RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Remote")
-				.WaitForChild(name) as RemoteEvent;
+				.FindFirstChild(name) as RemoteEvent;
 
 			// if the event is undefined, call new to create it
-			if (!RemoteEvent) {
-				IPC.Remote.new(name);
+			if (typeIs(RemoteEvent, "nil")) {
+				this.create(name);
 				RemoteEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Remote")
 					.WaitForChild(name) as RemoteEvent;
@@ -97,7 +97,7 @@ class IPC {
 
 	static Bindable = class {
 		// Create a new BindableEvent
-		static new(name: string) {
+		static create(name: string) {
 			const BindableEvent = new Instance("BindableEvent");
 			BindableEvent.Name = name;
 			BindableEvent.Parent = ReplicatedStorage.WaitForChild("IPC").WaitForChild("Bindable");
@@ -105,37 +105,37 @@ class IPC {
 		}
 
 		// Listen for a BindableEvent
-		static on(name: string, callback: (player: Player, ...args: unknown[]) => void) {
+		static on<T extends unknown[]>(name: string, callback: (...args: T) => void) {
 			let BindableEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Bindable")
-				.WaitForChild(name) as BindableEvent;
+				.FindFirstChild(name) as BindableEvent;
 
 			// if the event is undefined, call new to create it
-			if (!BindableEvent) {
-				IPC.Bindable.new(name);
+			if (typeIs(BindableEvent, "nil")) {
+				this.create(name);
 				BindableEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Bindable")
 					.WaitForChild(name) as BindableEvent;
 			}
 
-			BindableEvent.Event.Connect(callback);
+			BindableEvent.Event.Connect((...args: unknown[]) => callback(...(args as T)));
 		}
 
 		// Fire a BindableEvent
-		static fire(name: string, player: Player, ...args: unknown[]) {
+		static fire(name: string, ...args: unknown[]) {
 			let BindableEvent = ReplicatedStorage.WaitForChild("IPC")
 				.WaitForChild("Bindable")
-				.WaitForChild(name) as BindableEvent;
+				.FindFirstChild(name) as BindableEvent;
 
 			// if the event is undefined, call new to create it
-			if (!BindableEvent) {
-				IPC.Bindable.new(name);
+			if (typeIs(BindableEvent, "nil")) {
+				this.create(name);
 				BindableEvent = ReplicatedStorage.WaitForChild("IPC")
 					.WaitForChild("Bindable")
 					.WaitForChild(name) as BindableEvent;
 			}
 
-			BindableEvent.Fire(player, ...args);
+			BindableEvent.Fire(...args);
 		}
 	};
 }
