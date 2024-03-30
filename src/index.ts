@@ -40,7 +40,10 @@ class IPC {
 					.WaitForChild(name) as RemoteEvent;
 			}
 
-			RemoteEvent.OnServerEvent.Connect((player: Player, ...args: unknown[]) => callback(player, ...(args as T)));
+			const conn = RemoteEvent.OnServerEvent.Connect((player: Player, ...args: unknown[]) =>
+				callback(player, ...(args as T)),
+			);
+			return conn;
 		}
 
 		// Fire a RemoteEvent to a client
@@ -118,7 +121,8 @@ class IPC {
 					.WaitForChild(name) as BindableEvent;
 			}
 
-			BindableEvent.Event.Connect((...args: unknown[]) => callback(...(args as T)));
+			const conn = BindableEvent.Event.Connect((...args: unknown[]) => callback(...(args as T)));
+			return conn;
 		}
 
 		// Fire a BindableEvent

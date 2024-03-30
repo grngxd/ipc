@@ -29,10 +29,11 @@ do
 			self:create(name)
 			RemoteEvent = ReplicatedStorage:WaitForChild("IPC"):WaitForChild("Remote"):WaitForChild(name)
 		end
-		RemoteEvent.OnServerEvent:Connect(function(player, ...)
+		local conn = RemoteEvent.OnServerEvent:Connect(function(player, ...)
 			local args = { ... }
 			return callback(player, unpack(args))
 		end)
+		return conn
 	end
 	function _class:fire(name, player, ...)
 		local args = { ... }
@@ -96,10 +97,11 @@ do
 			self:create(name)
 			BindableEvent = ReplicatedStorage:WaitForChild("IPC"):WaitForChild("Bindable"):WaitForChild(name)
 		end
-		BindableEvent.Event:Connect(function(...)
+		local conn = BindableEvent.Event:Connect(function(...)
 			local args = { ... }
 			return callback(unpack(args))
 		end)
+		return conn
 	end
 	function _class_1:fire(name, ...)
 		local args = { ... }
